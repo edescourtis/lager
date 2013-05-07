@@ -124,7 +124,14 @@ write(#state{name=Name, fd=FD, inode=Inode, flap=Flap, size=RotSize,
             write(State, Level, Msg);
         {ok, {NewFD, NewInode, _}} ->
             %% delayed_write doesn't report errors
-            _ = file:write(NewFD, Msg),
+            _ = file:write(NewFD, 
+                case Msg of
+                    Bin when is_binary(Bin) -> 
+                        Bin;
+                    Other when is_list(Other) ->
+                        unicode:characters_to_binary(Other, utf8)
+                end
+            ),
             case Level of
                 _ when Level =< ?ERROR ->
                     %% force a sync on any message at error severity or above

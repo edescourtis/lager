@@ -53,7 +53,7 @@ num_to_level(-1) -> none.
 open_logfile(Name, Buffer) ->
     case filelib:ensure_dir(Name) of
         ok ->
-            Options = [append, raw] ++
+            Options = [append, raw, binary] ++
             if Buffer == true -> [delayed_write];
                 true -> []
             end,
